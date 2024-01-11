@@ -34,7 +34,7 @@ This repository contains a simple implementation of a classic Ping Pong game usi
 Run the game using the following command:
 
 ```bash
-python ping_pong_game.py
+python pingpong.py
 ```
 
 Use the UP and DOWN arrow keys to control your paddle. The opponent paddle will automatically follow the ball.
