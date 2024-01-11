@@ -20,7 +20,7 @@ This repository contains a simple implementation of a classic Ping Pong game usi
 2. Navigate to the project directory:
 
    ```bash
-   cd ping-pong-game
+   cd pingpong
    ```
 
 3. Install dependencies (Pygame):
