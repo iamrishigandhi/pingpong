@@ -6,7 +6,7 @@ This repository contains a simple implementation of a classic Ping Pong game usi
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3
 - Pip (Python package installer)
 
 ### Installation
@@ -16,14 +16,8 @@ This repository contains a simple implementation of a classic Ping Pong game usi
    ```bash
    git clone https://github.com/iamrishigandhi/pingpong
    ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd pingpong
-   ```
-
-3. Install dependencies (Pygame):
+   
+2. Install dependencies (Pygame):
 
    ```bash
    pip install pygame
