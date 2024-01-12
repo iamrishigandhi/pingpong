@@ -6,7 +6,7 @@ import random
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 600, 400
+WIDTH, HEIGHT = 900, 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 FPS = 60
@@ -36,7 +36,7 @@ restart_button = pygame.Rect(WIDTH // 2 - 50, HEIGHT // 2 + 50, 100, 50)
 
 # Score increment variables
 last_score_time = pygame.time.get_ticks()
-score_increment_interval = 100  # 100 milliseconds (0.1 seconds)
+score_increment_interval = 10  # 10 milliseconds
 
 # Game loop
 clock = pygame.time.Clock()
@@ -99,21 +99,25 @@ while True:
 
     if game_over:
         # Display "Game Over" text
-        game_over_text = game_over_font.render("Game Over", True, WHITE)
-        screen.blit(game_over_text, (WIDTH // 2 - 100, HEIGHT // 2 - 50))
+        game_over_text = game_over_font.render("GAME OVER", True, WHITE)
+        screen_rect = screen.get_rect()
+        screen.blit(game_over_text, (screen_rect.centerx - game_over_text.get_width() // 2,
+                                     screen_rect.centery - 50))
 
         # Display player's score
-        score_text = font.render("Score: {}".format(score), True, WHITE)
-        screen.blit(score_text, (WIDTH // 2 - 40, HEIGHT // 2))
+        score_text = font.render("SCORE: {}".format(score), True, WHITE)
+        screen.blit(score_text, (screen_rect.centerx - score_text.get_width() // 2,
+                                 screen_rect.centery))
 
         # Draw restart button
         pygame.draw.rect(screen, WHITE, restart_button)
-        restart_text = font.render("Restart", True, BLACK)
-        screen.blit(restart_text, (WIDTH // 2 - 35, HEIGHT // 2 + 60))
+        restart_text = font.render("RESTART", True, BLACK)
+        screen.blit(restart_text, (screen_rect.centerx - restart_text.get_width() // 2,
+                                   screen_rect.centery + 60))
 
     else:
         # Display the score
-        score_text = font.render("Score: {}".format(score), True, WHITE)
+        score_text = font.render("SCORE: {}".format(score), True, WHITE)
         screen.blit(score_text, (10, 10))
 
     # Update the display
