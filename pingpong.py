@@ -1,7 +1,6 @@
 import pygame
 import sys
 import random
-import math
 
 # Initialize Pygame
 pygame.init()
@@ -17,13 +16,17 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Ping Pong Game")
 
 # Create the paddles
-player_paddle = pygame.Rect(50, HEIGHT // 2 - 20, 10, 40)
-opponent_paddle = pygame.Rect(WIDTH - 60, HEIGHT // 2 - 20, 10, 40)
+player_paddle = pygame.Rect((HEIGHT//10), HEIGHT // 2 - (WIDTH//50), (WIDTH//100), (HEIGHT//15))
+opponent_paddle = pygame.Rect(WIDTH - (HEIGHT//10), HEIGHT // 2 - (WIDTH//50), (WIDTH//100), (HEIGHT//15))
 
 # Create the ball
-ball = pygame.Rect(WIDTH // 2 - 10, HEIGHT // 2 - 10, 20, 20)
-ballSpeedX = ballSpeedY = 3.6
-ball_speed = [ballSpeedX, ballSpeedY]
+ball_size_percentage = 5  
+ball_width = int(HEIGHT * ball_size_percentage / 100)
+ball_height = int(HEIGHT * ball_size_percentage / 100)
+
+ball = pygame.Rect(WIDTH // 2 - ball_width // 2, HEIGHT // 2 - ball_height // 2, ball_width, ball_height)
+ball_speed_x = ball_speed_y = 6
+ball_speed = [ball_speed_x, ball_speed_y]
 
 # Score variables
 score = 0
@@ -34,11 +37,11 @@ game_over = False
 game_over_font = pygame.font.Font(None, 50)
 
 # Restart button
-restart_button = pygame.Rect(WIDTH // 2 - 50, HEIGHT // 2 + 50, 100, 50)
+restart_button = pygame.Rect(WIDTH // 2 - 60, HEIGHT // 2 + 45, 120, 60)
 
 # Score increment variables
 last_score_time = pygame.time.get_ticks()
-score_increment_interval = 10  # 10 milliseconds
+score_increment_interval = 100  # 10 milliseconds
 
 # Game loop
 clock = pygame.time.Clock()
@@ -60,10 +63,11 @@ while True:
 
     if not game_over:
         # Update player paddle position
+        player_paddle_speed = 8
         if (keys[pygame.K_UP] or keys[pygame.K_w]) and player_paddle.top > 0:
-            player_paddle.y -= 5
+            player_paddle.y -= player_paddle_speed
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and player_paddle.bottom < HEIGHT:
-            player_paddle.y += 5
+            player_paddle.y += player_paddle_speed
 
         # Ball collisions with walls
         if ball.top <= 0 or ball.bottom >= HEIGHT:
@@ -85,13 +89,18 @@ while True:
             ball_speed[0] = -ball_speed[0]
 
         # Move opponent paddle towards the ball
-        if opponent_paddle.centery < ball.centery:
-            opponent_paddle.y += 5
-        elif opponent_paddle.centery > ball.centery:
-            opponent_paddle.y -= 5
+        target_position = ball.centery
+        opponent_paddle_speed = 15
+        if opponent_paddle.centery < target_position:
+            opponent_paddle.y += min(opponent_paddle_speed, target_position - opponent_paddle.centery)
+        elif opponent_paddle.centery > target_position:
+            opponent_paddle.y -= min(opponent_paddle_speed, opponent_paddle.centery - target_position)
 
         # Check if the ball goes beyond the player paddle
         if ball.left <= 0:
+            game_over = True
+
+        if ball.right >= WIDTH:
             game_over = True
 
         # Update ball position
@@ -105,11 +114,19 @@ while True:
     pygame.draw.ellipse(screen, WHITE, ball)
 
     if game_over:
-        # Display "Game Over" text
-        game_over_text = game_over_font.render("GAME OVER", True, WHITE)
-        screen_rect = screen.get_rect()
-        screen.blit(game_over_text, (screen_rect.centerx - game_over_text.get_width() // 2,
-                                     screen_rect.centery - 50))
+
+        if ball.left<=0:
+            # Display "Game Over" text
+            game_over_text = game_over_font.render("GAME OVER", True, WHITE)
+            screen_rect = screen.get_rect()
+            screen.blit(game_over_text, (screen_rect.centerx - game_over_text.get_width() // 2,
+                                        screen_rect.centery - 50))
+        
+        else:
+            game_over_text = game_over_font.render("YOU WIN!", True, WHITE)
+            screen_rect = screen.get_rect()
+            screen.blit(game_over_text, (screen_rect.centerx - game_over_text.get_width() // 2,
+                                        screen_rect.centery - 50))
 
         # Display player's score
         score_text = font.render("SCORE: {}".format(score), True, WHITE)
