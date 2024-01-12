@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -21,7 +22,8 @@ opponent_paddle = pygame.Rect(WIDTH - 60, HEIGHT // 2 - 20, 10, 40)
 
 # Create the ball
 ball = pygame.Rect(WIDTH // 2 - 10, HEIGHT // 2 - 10, 20, 20)
-ball_speed = [3, 3]
+ballSpeedX = ballSpeedY = 3.6
+ball_speed = [ballSpeedX, ballSpeedY]
 
 # Score variables
 score = 0
@@ -63,33 +65,38 @@ while True:
         if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and player_paddle.bottom < HEIGHT:
             player_paddle.y += 5
 
-        # Update ball position
-        ball.x += ball_speed[0]
-        ball.y += ball_speed[1]
-
         # Ball collisions with walls
         if ball.top <= 0 or ball.bottom >= HEIGHT:
             ball_speed[1] = -ball_speed[1]
 
+        # Update ball position
+        ball_next_position = ball.copy()
+        ball_next_position.x += ball_speed[0]
+        ball_next_position.y += ball_speed[1]
+
         # Ball collisions with paddles
-        if ball.colliderect(player_paddle):
+        if ball_next_position.colliderect(player_paddle):
             ball_speed[0] = -ball_speed[0]
             current_time = pygame.time.get_ticks()
             if current_time - last_score_time >= score_increment_interval:
                 score += 1  # Increase the score when the ball hits the player's paddle
                 last_score_time = current_time
-        elif ball.colliderect(opponent_paddle):
+        elif ball_next_position.colliderect(opponent_paddle):
             ball_speed[0] = -ball_speed[0]
 
         # Move opponent paddle towards the ball
         if opponent_paddle.centery < ball.centery:
-            opponent_paddle.y += 3
+            opponent_paddle.y += 5
         elif opponent_paddle.centery > ball.centery:
-            opponent_paddle.y -= 3
+            opponent_paddle.y -= 5
 
         # Check if the ball goes beyond the player paddle
         if ball.left <= 0:
             game_over = True
+
+        # Update ball position
+        ball.x += ball_speed[0]
+        ball.y += ball_speed[1]
 
     # Draw everything
     screen.fill(BLACK)
